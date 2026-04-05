@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CBK Banking System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B0E13;--bg2:#111620;--bg3:#181E2A;--bg4:#1F2736;
+  --border:#ffffff12;--border2:#ffffff20;--border3:#ffffff35;
+  --text:#E8EDF5;--muted:#7A8599;--muted2:#A0ABBE;
+  --green:#00C87A;--green-dim:#00c87a22;--green-bg:#00c87a0f;
+  --gold:#C8960C;--gold-dim:#c8960c22;--gold-light:#F5C842;
+  --red:#E04545;--red-dim:#e0454522;
+  --blue:#3B82F6;--blue-dim:#3b82f622;
+  --font-d:'Fraunces',Georgia,serif;
+  --font-b:'DM Sans',sans-serif;
+  --font-m:'DM Mono',monospace;
+  --r:10px;--rl:14px;--rxl:20px;
+}
+html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(--text);font-size:14px;line-height:1.6}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:#ffffff20;border-radius:4px}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lcard{width:420px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rxl);padding:48px 40px;box-shadow:0 4px 40px #00000060}
+.llogo{display:flex;align-items:center;gap:14px;margin-bottom:36px}
+.lemblem{width:52px;height:52px;background:linear-gradient(135deg,var(--green),#00a864);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:13px;color:#fff;box-shadow:0 0 0 1px #00c87a40,0 8px 24px #00c87a20}
+.ltitle{font-family:var(--font-d);font-size:22px;font-weight:600}
+.lsub{font-size:12px;color:var(--muted);margin-top:2px}
+.llabel{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.linput{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:11px 14px;font-family:var(--font-b);font-size:14px;color:var(--text);outline:none;transition:.2s;margin-bottom:16px}
+.linput:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
+.lbtn{width:100%;background:var(--green);color:#000;font-weight:500;font-size:14px;font-family:var(--font-b);border:none;border-radius:var(--r);padding:12px;cursor:pointer;transition:.2s;margin-top:8px}
+.lbtn:hover{background:#00da88;transform:translateY(-1px)}
+.lerr{background:var(--red-dim);border:1px solid var(--red);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--red);margin-bottom:14px;display:none}
+.ldemo{font-size:11px;color:var(--muted);text-align:center;margin-top:20px}
+.ldemo span{color:var(--muted2)}
+
+/* APP */
+#app{display:none;flex-direction:row;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sb{width:224px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.sb-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
+.sb-emblem{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.emblem{width:34px;height:34px;background:linear-gradient(135deg,var(--green),#00a864);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:9px;color:#fff;box-shadow:0 0 0 1px #00c87a30}
+.sb-brand{font-family:var(--font-d);font-size:14px;font-weight:600}
+.sb-ver{font-size:10px;color:var(--muted);font-family:var(--font-m);margin-top:3px}
+.sb-sec{padding:14px 14px 4px;font-size:9px;font-weight:500;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase}
+.nav{display:flex;align-items:center;gap:9px;padding:8px 12px;margin:1px 8px;border-radius:8px;cursor:pointer;color:var(--muted2);font-size:13px;transition:.15s;border:1px solid transparent}
+.nav:hover{background:var(--bg3);color:var(--text)}
+.nav.on{background:var(--green-bg);color:var(--green);border-color:var(--green-dim)}
+.nav-ic{font-size:14px;width:17px;text-align:center;flex-shrink:0}
+.sb-foot{margin-top:auto;padding:14px;border-top:1px solid var(--border)}
+.achip{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)}
+.aav{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#1f7a4d,var(--green));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#fff;font-family:var(--font-m)}
+.aname{font-size:12px;font-weight:500;line-height:1.2}
+.arole{font-size:10px;color:var(--muted)}
+.lout{margin-left:auto;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;transition:.15s}
+.lout:hover{color:var(--red)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0}
+.tb-title{font-family:var(--font-d);font-size:19px;font-weight:600}
+.tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-right{display:flex;align-items:center;gap:10px}
+.live{display:flex;align-items:center;gap:5px;background:var(--green-bg);border:1px solid var(--green-dim);padding:4px 9px;border-radius:20px;font-size:10px;color:var(--green);font-family:var(--font-m)}
+.ld{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.clk{font-family:var(--font-m);font-size:11px;color:var(--muted)}
+.content{flex:1;padding:22px 24px;overflow-y:auto}
+
+/* PANELS */
+.panel{display:none}
+.panel.on{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--sc-ac,#00c87a30),transparent)}
+.sc.g{--sc-ac:#00c87a30}.sc.go{--sc-ac:#c8960c30}.sc.b{--sc-ac:#3b82f630}.sc.r{--sc-ac:#e0454530}
+.sc-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:12px}
+.sc-ic.g{background:var(--green-dim);color:var(--green)}.sc-ic.go{background:var(--gold-dim);color:var(--gold-light)}.sc-ic.b{background:var(--blue-dim);color:var(--blue)}.sc-ic.r{background:var(--red-dim);color:var(--red)}
+.sc-lbl{font-size:11px;color:var(--muted);margin-bottom:5px}
+.sc-val{font-family:var(--font-d);font-size:24px;font-weight:600;line-height:1}
+.sc-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:16px}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
+.ct{font-size:13px;font-weight:500}.cs{font-size:11px;color:var(--muted);margin-top:1px}
+.cb{padding:18px}.cbs{padding:14px}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.g32{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:16px}
+
+/* TABLE */
+.tblw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:9px 14px;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg3);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:500;font-family:var(--font-m);white-space:nowrap}
+.bg{background:var(--green-bg);color:var(--green);border:1px solid var(--green-dim)}
+.br{background:var(--red-dim);color:var(--red)}
+.bb{background:var(--blue-dim);color:var(--blue)}
+.bgo{background:var(--gold-dim);color:var(--gold-light)}
+.bm{background:#ffffff08;color:var(--muted)}
+.bdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-family:var(--font-b);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;border:none;white-space:nowrap}
+.btn-p{background:var(--green);color:#000}.btn-p:hover{background:#00da88;transform:translateY(-1px)}
+.btn-g{background:transparent;color:var(--muted2);border:1px solid var(--border2)}.btn-g:hover{background:var(--bg3);color:var(--text)}
+.btn-d{background:var(--red-dim);color:var(--red)}.btn-d:hover{background:var(--red);color:#fff}
+.btn-f{width:100%;justify-content:center}
+
+/* FORMS */
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.fi,.fs{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:9px 12px;font-family:var(--font-b);font-size:13px;color:var(--text);outline:none;transition:.2s}
+.fi:focus,.fs:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
+.fi::placeholder{color:var(--muted)}
+.fs option{background:var(--bg3)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ALERTS */
+#az{position:fixed;top:18px;right:18px;z-index:9999;width:340px;display:flex;flex-direction:column;gap:8px}
+.al{padding:11px 14px;border-radius:var(--r);font-size:13px;display:flex;align-items:flex-start;gap:8px;animation:fi .25s ease;box-shadow:0 4px 24px #00000050}
+.al-ok{background:var(--green-bg);border:1px solid var(--green-dim);color:var(--green)}
+.al-err{background:var(--red-dim);border:1px solid #e0454540;color:var(--red)}
+.al-info{background:var(--blue-dim);border:1px solid #3b82f640;color:var(--blue)}
+
+/* TX ROWS */
+.txr{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.txr:last-child{border-bottom:none}
+.txic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.txd{background:var(--green-bg);color:var(--green)}.txw{background:var(--red-dim);color:var(--red)}
+.txin{flex:1;min-width:0}
+.txn{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txm{font-size:11px;color:var(--muted);font-family:var(--font-m);margin-top:1px}
+.txa{font-size:13px;font-weight:500;font-family:var(--font-m);white-space:nowrap}
+.txda{color:var(--green)}.txwa{color:var(--red)}
+
+/* ROUTE FLOW */
+.rflow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:11px 14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border);margin-bottom:14px}
+.rn{padding:3px 9px;border-radius:5px;font-size:11px;font-weight:500;font-family:var(--font-m)}
+.rn-cbk{background:var(--green-bg);color:var(--green);border:1px solid var(--green-dim)}
+.rn-bk{background:var(--blue-dim);color:var(--blue)}
+.rn-u{background:var(--gold-dim);color:var(--gold-light)}
+.rarr{color:var(--muted);font-size:12px}
+
+/* CBK VISUAL */
+.cbkv{display:flex;background:var(--bg3);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden}
+.cvs{flex:1;padding:16px;text-align:center;position:relative}
+.cvs::after{content:'→';position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;z-index:1}
+.cvs:last-child::after{display:none}
+.cvs.cen{background:var(--green-bg);border-left:1px solid var(--border);border-right:1px solid var(--border)}
+.cv-ic{font-size:20px;margin-bottom:5px}
+.cv-lbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.cv-val{font-size:11px;color:var(--text);font-family:var(--font-m);margin-top:2px}
+.cvs.cen .cv-lbl{color:var(--green)}.cvs.cen .cv-val{color:var(--green)}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:#00000085;z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.mov.op{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rxl);padding:30px;width:480px;max-width:95vw;box-shadow:0 4px 40px #00000070;animation:fi .2s ease;position:relative}
+.modal h2{font-family:var(--font-d);font-size:18px;font-weight:600;margin-bottom:18px}
+.mc{position:absolute;right:18px;top:18px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:5px}
+.mc:hover{background:var(--bg3);color:var(--text)}
+
+/* MISC */
+.sec-title{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:36px 20px;color:var(--muted)}
+.empty-ic{font-size:28px;margin-bottom:10px;opacity:.35}
+.sbar{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:7px 12px;margin-bottom:14px}
+.sbar input{flex:1;background:transparent;border:none;outline:none;font-family:var(--font-b);font-size:13px;color:var(--text)}
+.sbar input::placeholder{color:var(--muted)}
+.status-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.status-row:last-child{border-bottom:none}
+.msg-item{display:flex;gap:10px;align-items:flex-start;padding:11px 16px;border-bottom:1px solid var(--border)}
+.msg-item:last-child{border-bottom:none}
+.msg-ic{width:32px;height:32px;border-radius:8px;background:var(--bg4);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.msg-body{flex:1;min-width:0}
+.msg-to{font-size:10px;color:var(--muted);font-family:var(--font-m)}
+.msg-txt{font-size:12px;color:var(--text);margin-top:2px;line-height:1.5}
+.msg-ts{font-size:10px;color:var(--muted);font-family:var(--font-m);margin-top:3px}
+.arow{display:flex;align-items:flex-start;gap:10px;padding:9px 16px;border-bottom:1px solid var(--border)}
+.arow:last-child{border-bottom:none}
+.adot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.adot.ok{background:var(--green)}.adot.info{background:var(--blue)}.adot.warn{background:var(--gold)}
+.atm{font-family:var(--font-m);font-size:10px;color:var(--muted);flex-shrink:0;width:65px}
+.amsg{font-size:12px;color:var(--muted2)}
+.ussd-row{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--border);font-family:var(--font-m);font-size:11px}
+.ussd-row:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+
+<div id="az"></div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="lcard">
+    <div class="llogo">
+      <div class="lemblem">CBK</div>
+      <div><div class="ltitle">Central Bank of Kenya</div><div class="lsub">Core Banking Admin Portal</div></div>
+    </div>
+    <div id="lerr" class="lerr"></div>
+    <label class="llabel">Username</label>
+    <input class="linput" id="lu" type="text" placeholder="cbk_admin" autocomplete="username"/>
+    <label class="llabel">Password</label>
+    <input class="linput" id="lp" type="password" placeholder="••••••••" autocomplete="current-password"/>
+    <button class="lbtn" id="lbtn" onclick="doLogin()">Sign In to Dashboard</button>
+    <div class="ldemo">Default: <span>cbk_admin</span> / <span>Admin@CBK2024!</span> — change after first login</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-logo">
+      <div class="sb-emblem"><div class="emblem">CBK</div><div><div class="sb-brand">Banking System</div></div></div>
+      <div class="sb-ver">v2.1.0 · Production</div>
+    </div>
+    <div class="sb-sec">Overview</div>
+    <div class="nav on" data-p="dashboard"><span class="nav-ic">▦</span>Dashboard</div>
+    <div class="nav" data-p="auditlog"><span class="nav-ic">◎</span>Audit Log</div>
+    <div class="nav" data-p="messages"><span class="nav-ic">✉</span>SMS Log</div>
+    <div class="sb-sec">Management</div>
+    <div class="nav" data-p="banks"><span class="nav-ic">🏦</span>Local Banks</div>
+    <div class="nav" data-p="accounts"><span class="nav-ic">👤</span>Accounts</div>
+    <div class="nav" data-p="transactions"><span class="nav-ic">⇅</span>Transactions</div>
+    <div class="nav" data-p="ussd"><span class="nav-ic">📱</span>USSD Sessions</div>
+    <div class="sb-foot">
+      <div class="achip">
+        <div class="aav" id="aav">SA</div>
+        <div><div class="aname" id="aname">Admin</div><div class="arole">CBK Administrator</div></div>
+        <button class="lout" onclick="logout()" title="Sign out">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div><div class="tb-title" id="tbt">Dashboard</div><div class="tb-sub" id="tbs">Central Bank of Kenya — System Overview</div></div>
+      <div class="tb-right">
+        <div class="live"><div class="ld"></div>LIVE</div>
+        <div class="clk" id="clk">--:--:--</div>
+        <button class="btn btn-g" onclick="refreshDash()" style="font-size:12px">⟳ Refresh</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="panel on" id="p-dashboard">
+        <div class="stat-row">
+          <div class="sc g"><div class="sc-ic g">🏛</div><div class="sc-lbl">CBK Reserve</div><div class="sc-val" id="s-res">KSh 0</div><div class="sc-sub">Central funds</div></div>
+          <div class="sc go"><div class="sc-ic go">👥</div><div class="sc-lbl">Total Accounts</div><div class="sc-val" id="s-acc">0</div><div class="sc-sub">Active accounts</div></div>
+          <div class="sc b"><div class="sc-ic b">⇅</div><div class="sc-lbl">Transactions Today</div><div class="sc-val" id="s-tx">0</div><div class="sc-sub" id="s-vol">Volume: KSh 0</div></div>
+          <div class="sc g"><div class="sc-ic g">🏦</div><div class="sc-lbl">Local Banks</div><div class="sc-val" id="s-bk">0</div><div class="sc-sub">Registered with CBK</div></div>
+        </div>
+        <div class="g32">
+          <div class="card">
+            <div class="ch"><div><div class="ct">Recent Transactions</div><div class="cs">All channels · CBK-routed</div></div><button class="btn btn-g" onclick="showPanel('transactions')" style="font-size:12px">View all →</button></div>
+            <div class="cbs" id="dash-txs"><div class="empty"><div class="empty-ic">⇅</div><div>No transactions yet</div></div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">System Status</div></div>
+            <div class="cb">
+              <div class="status-row"><span style="font-size:13px;color:var(--muted2)">CBK Gateway</span><div class="badge bg"><div class="bdot"></div>Online</div></div>
+              <div class="status-row"><span style="font-size:13px;color:var(--muted2)">USSD Engine</span><div class="badge bg"><div class="bdot"></div>Active</div></div>
+              <div class="status-row"><span style="font-size:13px;color:var(--muted2)">SMS Gateway</span><div class="badge bg"><div class="bdot"></div>Ready</div></div>
+              <div class="status-row"><span style="font-size:13px;color:var(--muted2)">Database</span><div class="badge bg"><div class="bdot"></div>Connected</div></div>
+              <div class="status-row"><span style="font-size:13px;color:var(--muted2)">Africa's Talking</span><div class="badge bg" id="at-st"><div class="bdot"></div>Active</div></div>
+              <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+                <div class="sec-title">Quick Actions</div>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <button class="btn btn-g btn-f" onclick="openM('m-bank')" style="font-size:12px;justify-content:flex-start">＋ Register New Local Bank</button>
+                  <button class="btn btn-g btn-f" onclick="openM('m-account')" style="font-size:12px;justify-content:flex-start">＋ Open Customer Account</button>
+                  <button class="btn btn-g btn-f" onclick="openM('m-tx')" style="font-size:12px;justify-content:flex-start">＋ Process Transaction</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="ch"><div><div class="ct">CBK Transaction Routing Architecture</div><div class="cs">Every transaction passes through the Central Bank</div></div></div>
+          <div class="cb">
+            <div class="cbkv">
+              <div class="cvs"><div class="cv-ic">📱</div><div class="cv-lbl">Customer</div><div class="cv-val">USSD / Admin</div></div>
+              <div class="cvs"><div class="cv-ic">📡</div><div class="cv-lbl">AT Gateway</div><div class="cv-val">*384*1#</div></div>
+              <div class="cvs cen"><div class="cv-ic">🏛</div><div class="cv-lbl">CBK Central</div><div class="cv-val">Ledger + Routing</div></div>
+              <div class="cvs"><div class="cv-ic">🏦</div><div class="cv-lbl">Local Bank</div><div class="cv-val" id="route-bk">—</div></div>
+              <div class="cvs"><div class="cv-ic">💳</div><div class="cv-lbl">Account</div><div class="cv-val">Settled ✓</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANKS -->
+      <div class="panel" id="p-banks">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="sec-title" style="margin:0">Registered Local Banks</div>
+          <button class="btn btn-p" onclick="openM('m-bank')">＋ Register Bank</button>
+        </div>
+        <div class="card"><div class="tblw"><table><thead><tr><th>Bank Name</th><th>Code</th><th>Region</th><th>CBK Allocation</th><th>Live Balance</th><th>Accounts</th><th>Status</th></tr></thead><tbody id="tb-banks"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">Loading…</td></tr></tbody></table></div></div>
+      </div>
+
+      <!-- ACCOUNTS -->
+      <div class="panel" id="p-accounts">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="sec-title" style="margin:0">Customer Accounts</div>
+          <button class="btn btn-p" onclick="openM('m-account')">＋ Open Account</button>
+        </div>
+        <div class="sbar"><span style="color:var(--muted)">🔍</span><input type="text" placeholder="Search by name, account number, or phone…" id="acct-q" oninput="filterAccts()"/></div>
+        <div class="card"><div class="tblw"><table><thead><tr><th>Account No.</th><th>Name</th><th>Phone</th><th>Type</th><th>Bank</th><th>Balance</th><th>Via</th><th>Status</th></tr></thead><tbody id="tb-accts"><tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px">Loading…</td></tr></tbody></table></div></div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="panel" id="p-transactions">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="sec-title" style="margin:0">Transaction History</div>
+          <button class="btn btn-p" onclick="openM('m-tx')">＋ New Transaction</button>
+        </div>
+        <div class="card"><div class="tblw"><table><thead><tr><th>Reference</th><th>Account</th><th>Name</th><th>Type</th><th>Amount</th><th>Fee</th><th>Bank</th><th>Channel</th><th>Date</th></tr></thead><tbody id="tb-txs"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:28px">Loading…</td></tr></tbody></table></div></div>
+      </div>
+
+      <!-- USSD -->
+      <div class="panel" id="p-ussd">
+        <div class="sec-title">USSD Sessions</div>
+        <div class="card"><div id="ussd-list"><div class="empty"><div class="empty-ic">📱</div><div>Sessions appear here when customers dial *384*1#</div></div></div></div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="panel" id="p-messages">
+        <div class="sec-title">SMS Confirmation Log</div>
+        <div class="card"><div id="sms-list"><div class="empty"><div class="empty-ic">✉</div><div>No messages yet</div></div></div></div>
+      </div>
+
+      <!-- AUDIT -->
+      <div class="panel" id="p-auditlog">
+        <div class="sec-title">System Audit Log</div>
+        <div class="card"><div id="audit-list"><div class="empty"><div class="empty-ic">◎</div><div>No events yet</div></div></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Register Bank -->
+<div class="mov" id="m-bank">
+  <div class="modal">
+    <button class="mc" onclick="closeM('m-bank')">✕</button>
+    <h2>Register Local Bank with CBK</h2>
+    <div id="m-bank-err"></div>
+    <div class="fr"><div class="fg"><label class="fl">Bank Name</label><input class="fi" id="b-name" placeholder="e.g. Equity Bank"/></div><div class="fg"><label class="fl">Bank Code</label><input class="fi" id="b-code" placeholder="e.g. EQT" style="text-transform:uppercase"/></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Region</label><select class="fs" id="b-region"><option>Nairobi</option><option>Mombasa</option><option>Kisumu</option><option>Nakuru</option><option>Eldoret</option><option>Thika</option><option>Nyeri</option><option>Meru</option></select></div><div class="fg"><label class="fl">CBK Allocation (KSh)</label><input class="fi" id="b-alloc" type="number" placeholder="10000000" min="0"/></div></div>
+    <div class="fg"><label class="fl">SWIFT Code (optional)</label><input class="fi" id="b-swift" placeholder="e.g. EQBLKENA"/></div>
+    <button class="btn btn-p btn-f" id="b-btn" onclick="submitBank()">Register Bank with CBK</button>
+  </div>
+</div>
+
+<!-- MODAL: Open Account -->
+<div class="mov" id="m-account">
+  <div class="modal">
+    <button class="mc" onclick="closeM('m-account')">✕</button>
+    <h2>Open Customer Account</h2>
+    <div id="m-acct-err"></div>
+    <div class="fr"><div class="fg"><label class="fl">Full Name</label><input class="fi" id="a-name" placeholder="John Mwangi"/></div><div class="fg"><label class="fl">National ID / Passport</label><input class="fi" id="a-id" placeholder="12345678"/></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Phone Number</label><input class="fi" id="a-phone" placeholder="0712345678"/></div><div class="fg"><label class="fl">Local Bank</label><select class="fs" id="a-bank"><option value="">— Select Bank —</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Account Type</label><select class="fs" id="a-type"><option>Savings</option><option>Current</option><option>Fixed Deposit</option></select></div><div class="fg"><label class="fl">Opening Balance (KSh)</label><input class="fi" id="a-bal" type="number" placeholder="0" min="0"/></div></div>
+    <div class="fg"><label class="fl">4-Digit PIN</label><input class="fi" id="a-pin" type="password" maxlength="4" placeholder="••••"/></div>
+    <button class="btn btn-p btn-f" id="a-btn" onclick="submitAccount()">Open Account &amp; Send Confirmation SMS</button>
+  </div>
+</div>
+
+<!-- MODAL: Transaction -->
+<div class="mov" id="m-tx">
+  <div class="modal">
+    <button class="mc" onclick="closeM('m-tx')">✕</button>
+    <h2>Process Transaction via CBK</h2>
+    <div id="m-tx-err"></div>
+    <div class="rflow">
+      <div class="rn rn-u">Customer</div><div class="rarr">→</div>
+      <div class="rn rn-cbk">CBK Central</div><div class="rarr">→</div>
+      <div class="rn rn-bk" id="tx-rbk">Local Bank</div><div class="rarr">→</div>
+      <div class="rn rn-u">Account</div>
+    </div>
+    <div class="fr"><div class="fg"><label class="fl">Account Number</label><input class="fi" id="t-acct" placeholder="CBK-XXXXXX" oninput="lookupAcct()"/></div><div class="fg"><label class="fl">Transaction Type</label><select class="fs" id="t-type"><option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option></select></div></div>
+    <div id="t-info" style="display:none;background:var(--bg3);border-radius:var(--r);padding:9px 12px;margin-bottom:12px;font-size:12px;border:1px solid var(--border2)">
+      <span style="color:var(--muted)">Holder: </span><span id="t-hld"></span>
+      <span style="color:var(--muted);margin-left:12px">Bank: </span><span id="t-bkn" style="color:var(--blue)"></span>
+      <span style="color:var(--muted);margin-left:12px">Balance: </span><span id="t-bal" style="color:var(--green);font-family:var(--font-m)"></span>
+    </div>
+    <div class="fr"><div class="fg"><label class="fl">Amount (KSh)</label><input class="fi" id="t-amt" type="number" placeholder="5000" min="1"/></div><div class="fg"><label class="fl">Description</label><input class="fi" id="t-desc" placeholder="e.g. Salary deposit"/></div></div>
+    <button class="btn btn-p btn-f" id="t-btn" onclick="submitTx()">Process via CBK → SMS Confirmation</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  CONFIG — same origin, no cross-origin needed
+// ══════════════════════════════════════════════════════════
+const API = '/api';   // Express serves both frontend & API on same port
+
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+let TOKEN  = localStorage.getItem('cbk_tok') || null;
+let ADMIN  = JSON.parse(localStorage.getItem('cbk_adm') || 'null');
+let BANKS  = [];
+let ACCNTS = [];
+
+// ══════════════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════════════
+(function boot() {
+  setInterval(() => {
+    document.getElementById('clk').textContent =
+      new Date().toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }, 1000);
+
+  document.querySelectorAll('.nav').forEach(n => n.addEventListener('click', () => showPanel(n.dataset.p)));
+  document.getElementById('lp').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
+  document.querySelectorAll('.mov').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('op'); }));
+
+  if (TOKEN && ADMIN) showApp();
+})();
+
+// ══════════════════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════════════════
+async function doLogin() {
+  const btn = document.getElementById('lbtn');
+  const err = document.getElementById('lerr');
+  err.style.display = 'none';
+  btn.innerHTML = '<span class="spinner"></span> Signing in…';
+  btn.disabled  = true;
+  try {
+    const res = await req('POST', '/auth/login', {
+      username: document.getElementById('lu').value.trim(),
+      password: document.getElementById('lp').value,
+    });
+    TOKEN = res.token; ADMIN = res.admin;
+    localStorage.setItem('cbk_tok', TOKEN);
+    localStorage.setItem('cbk_adm', JSON.stringify(ADMIN));
+    showApp();
+  } catch (e) {
+    err.textContent  = e.message || 'Invalid credentials';
+    err.style.display = 'block';
+  } finally {
+    btn.innerHTML = 'Sign In to Dashboard';
+    btn.disabled  = false;
+  }
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  if (ADMIN) {
+    const initials = (ADMIN.fullName || ADMIN.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('aav').textContent  = initials;
+    document.getElementById('aname').textContent = ADMIN.fullName || ADMIN.username;
+  }
+  refreshDash();
+}
+
+function logout() {
+  TOKEN = null; ADMIN = null;
+  localStorage.removeItem('cbk_tok');
+  localStorage.removeItem('cbk_adm');
+  location.reload();
+}
+
+// ══════════════════════════════════════════════════════════
+//  API HELPER
+// ══════════════════════════════════════════════════════════
+async function req(method, path, body) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
+  const r = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  if (r.status === 401) { logout(); return; }
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || (data.errors || []).join(', ') || 'Request failed');
+  return data;
+}
+
+// ══════════════════════════════════════════════════════════
+//  PANEL NAVIGATION
+// ══════════════════════════════════════════════════════════
+const META = {
+  dashboard:    ['Dashboard',        'Central Bank of Kenya — System Overview'],
+  banks:        ['Local Banks',      'All banks registered with CBK'],
+  accounts:     ['Customer Accounts','All active accounts across all local banks'],
+  transactions: ['Transactions',     'All CBK-routed transaction history'],
+  ussd:         ['USSD Sessions',    'Live and historical *384*1# sessions'],
+  messages:     ['SMS Log',          'All SMS confirmation messages sent'],
+  auditlog:     ['Audit Log',        'Complete system event history'],
+};
+
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nav').forEach(n => n.classList.toggle('on', n.dataset.p === name));
+  document.getElementById('p-' + name)?.classList.add('on');
+  const [t, s] = META[name] || [name, ''];
+  document.getElementById('tbt').textContent = t;
+  document.getElementById('tbs').textContent = s;
+  const loaders = { banks: loadBanks, accounts: loadAccounts, transactions: loadTxs, messages: loadSms, auditlog: loadAudit, ussd: loadUssd };
+  loaders[name]?.();
+}
+
+// ══════════════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════════════
+async function refreshDash() {
+  try {
+    const d = await req('GET', '/dashboard');
+    const s = d.stats;
+    document.getElementById('s-res').textContent = ksh(s.cbkReserve);
+    document.getElementById('s-acc').textContent = s.totalAccounts.toLocaleString();
+    document.getElementById('s-tx').textContent  = s.txToday.toLocaleString();
+    document.getElementById('s-vol').textContent = 'Volume: ' + ksh(s.txVolumeToday);
+    document.getElementById('s-bk').textContent  = s.totalBanks;
+    renderDashTxs(d.recentTransactions || []);
+  } catch (e) {
+    toast('Could not load dashboard: ' + e.message, 'err');
+  }
+}
+
+function renderDashTxs(txs) {
+  const el = document.getElementById('dash-txs');
+  if (!txs.length) { el.innerHTML = '<div class="empty"><div class="empty-ic">⇅</div><div>No transactions yet</div></div>'; return; }
+  el.innerHTML = txs.slice(0, 8).map(t => `
+    <div class="txr">
+      <div class="txic ${t.tx_type==='deposit'?'txd':'txw'}">${t.tx_type==='deposit'?'↓':'↑'}</div>
+      <div class="txin">
+        <div class="txn">${esc(t.full_name)}</div>
+        <div class="txm">${esc(t.tx_reference)} · ${esc(t.bank_code)} · ${dt(t.created_at)}</div>
+      </div>
+      <div class="txa ${t.tx_type==='deposit'?'txda':'txwa'}">${t.tx_type==='deposit'?'+':'-'}${ksh(t.amount)}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+//  BANKS
+// ══════════════════════════════════════════════════════════
+async function loadBanks() {
+  try {
+    const d = await req('GET', '/banks');
+    BANKS = d.banks;
+    fillBankSelects();
+    const el = document.getElementById('tb-banks');
+    if (!BANKS.length) { el.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">No banks registered yet.</td></tr>'; return; }
+    el.innerHTML = BANKS.map(b => `<tr>
+      <td style="font-weight:500">${esc(b.bank_name)}</td>
+      <td><span class="badge bm" style="font-family:var(--font-m)">${esc(b.bank_code)}</span></td>
+      <td style="color:var(--muted2)">${esc(b.region)}</td>
+      <td style="font-family:var(--font-m)">${ksh(b.cbk_allocation)}</td>
+      <td style="font-family:var(--font-m);color:var(--green)">${ksh(b.current_balance)}</td>
+      <td style="color:var(--muted2)">${b.account_count||0}</td>
+      <td><div class="badge ${b.is_active?'bg':'br'}"><div class="bdot"></div>${b.is_active?'Active':'Inactive'}</div></td>
+    </tr>`).join('');
+    if (BANKS.length) document.getElementById('route-bk').textContent = BANKS[0].bank_code;
+  } catch (e) { document.getElementById('tb-banks').innerHTML = `<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:20px">${esc(e.message)}</td></tr>`; }
+}
+
+async function submitBank() {
+  const btn = document.getElementById('b-btn');
+  const err = document.getElementById('m-bank-err');
+  err.innerHTML = '';
+  const body = { bankName: v('b-name'), bankCode: v('b-code').toUpperCase(), region: v('b-region'), cbkAllocation: parseFloat(v('b-alloc'))||0, swiftCode: v('b-swift') };
+  if (!body.bankName || !body.bankCode) { err.innerHTML = merr('Bank name and code are required.'); return; }
+  btn.innerHTML = '<span class="spinner"></span> Registering…'; btn.disabled = true;
+  try {
+    await req('POST', '/banks', body);
+    toast('Bank "' + body.bankName + '" registered with CBK!', 'ok');
+    closeM('m-bank');
+    ['b-name','b-code','b-alloc','b-swift'].forEach(id => document.getElementById(id).value = '');
+    loadBanks(); refreshDash();
+  } catch (e) { err.innerHTML = merr(e.message); }
+  finally { btn.innerHTML = 'Register Bank with CBK'; btn.disabled = false; }
+}
+
+// ══════════════════════════════════════════════════════════
+//  ACCOUNTS
+// ══════════════════════════════════════════════════════════
+async function loadAccounts() {
+  try {
+    const d = await req('GET', '/accounts?limit=200');
+    ACCNTS = d.accounts;
+    renderAccts(ACCNTS);
+  } catch (e) { document.getElementById('tb-accts').innerHTML = `<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:20px">${esc(e.message)}</td></tr>`; }
+}
+
+function renderAccts(list) {
+  const el = document.getElementById('tb-accts');
+  if (!list.length) { el.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px">No accounts yet.</td></tr>'; return; }
+  el.innerHTML = list.map(a => `<tr>
+    <td style="font-family:var(--font-m);font-size:12px;color:var(--green)">${esc(a.account_number)}</td>
+    <td style="font-weight:500">${esc(a.full_name)}</td>
+    <td style="font-family:var(--font-m);font-size:12px;color:var(--muted2)">${esc(a.phone_number)}</td>
+    <td><span class="badge bm">${esc(a.account_type)}</span></td>
+    <td style="color:var(--blue)">${esc(a.bank_name)} <span style="color:var(--muted);font-size:10px">(${esc(a.bank_code)})</span></td>
+    <td style="font-family:var(--font-m);color:var(--green);font-weight:500">${ksh(a.balance)}</td>
+    <td><span class="badge ${a.created_via==='ussd'?'bgo':'bb'}">${a.created_via||'admin'}</span></td>
+    <td><div class="badge ${a.is_active&&!a.is_blocked?'bg':'br'}"><div class="bdot"></div>${a.is_blocked?'Blocked':a.is_active?'Active':'Inactive'}</div></td>
+  </tr>`).join('');
+}
+
+function filterAccts() {
+  const q = document.getElementById('acct-q').value.toLowerCase();
+  renderAccts(ACCNTS.filter(a => a.full_name.toLowerCase().includes(q) || a.account_number.toLowerCase().includes(q) || a.phone_number.includes(q)));
+}
+
+function fillBankSelects() {
+  const sel = document.getElementById('a-bank');
+  sel.innerHTML = '<option value="">— Select Bank —</option>' + BANKS.map(b => `<option value="${b.id}">${esc(b.bank_name)} (${esc(b.bank_code)})</option>`).join('');
+}
+
+async function submitAccount() {
+  const btn = document.getElementById('a-btn');
+  const err = document.getElementById('m-acct-err');
+  err.innerHTML = '';
+  const body = { fullName: v('a-name'), nationalId: v('a-id'), phoneNumber: v('a-phone'), bankId: v('a-bank'), accountType: v('a-type'), openingBalance: parseFloat(v('a-bal'))||0, pin: v('a-pin') };
+  if (!body.fullName||!body.nationalId||!body.phoneNumber||!body.bankId||!body.pin) { err.innerHTML = merr('All fields except opening balance are required.'); return; }
+  btn.innerHTML = '<span class="spinner"></span> Opening account & sending SMS…'; btn.disabled = true;
+  try {
+    const res = await req('POST', '/accounts', body);
+    toast('Account ' + res.account.account_number + ' opened! SMS sent to ' + body.phoneNumber, 'ok');
+    closeM('m-account');
+    ['a-name','a-id','a-phone','a-bal','a-pin'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('a-bank').value = '';
+    loadAccounts(); refreshDash();
+  } catch (e) { err.innerHTML = merr(e.message); }
+  finally { btn.innerHTML = 'Open Account &amp; Send Confirmation SMS'; btn.disabled = false; }
+}
+
+// ══════════════════════════════════════════════════════════
+//  TRANSACTIONS
+// ══════════════════════════════════════════════════════════
+async function loadTxs() {
+  try {
+    const d = await req('GET', '/transactions?limit=200');
+    const el = document.getElementById('tb-txs');
+    if (!d.transactions.length) { el.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:28px">No transactions yet.</td></tr>'; return; }
+    el.innerHTML = d.transactions.map(t => `<tr>
+      <td style="font-family:var(--font-m);font-size:11px;color:var(--muted2)">${esc(t.tx_reference)}</td>
+      <td style="font-family:var(--font-m);font-size:12px;color:var(--green)">${esc(t.account_number)}</td>
+      <td style="font-weight:500">${esc(t.full_name)}</td>
+      <td><div class="badge ${t.tx_type==='deposit'?'bg':'br'}">${t.tx_type==='deposit'?'↓ deposit':'↑ withdrawal'}</div></td>
+      <td style="font-family:var(--font-m);font-weight:500;color:${t.tx_type==='deposit'?'var(--green)':'var(--red)'}">${t.tx_type==='deposit'?'+':'-'}${ksh(t.amount)}</td>
+      <td style="font-family:var(--font-m);color:var(--muted);font-size:11px">${t.fee>0?ksh(t.fee):'—'}</td>
+      <td style="color:var(--blue)">${esc(t.bank_code)}</td>
+      <td><span class="badge bm">${esc(t.channel||'admin')}</span></td>
+      <td style="color:var(--muted);font-size:11px;font-family:var(--font-m)">${dt(t.created_at)}</td>
+    </tr>`).join('');
+  } catch (e) { document.getElementById('tb-txs').innerHTML = `<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:20px">${esc(e.message)}</td></tr>`; }
+}
+
+async function lookupAcct() {
+  const val = document.getElementById('t-acct').value.trim().toUpperCase();
+  const inf = document.getElementById('t-info');
+  document.getElementById('tx-rbk').textContent = 'Local Bank';
+  if (val.length < 7) { inf.style.display = 'none'; return; }
+  try {
+    const d = await req('GET', '/accounts/' + val);
+    if (d.account) {
+      document.getElementById('t-hld').textContent = d.account.full_name;
+      document.getElementById('t-bkn').textContent = d.account.bank_name + ' (' + d.account.bank_code + ')';
+      document.getElementById('t-bal').textContent = ksh(d.account.balance);
+      document.getElementById('tx-rbk').textContent = d.account.bank_code;
+      inf.style.display = 'block';
+    }
+  } catch { inf.style.display = 'none'; }
+}
+
+async function submitTx() {
+  const btn = document.getElementById('t-btn');
+  const err = document.getElementById('m-tx-err');
+  err.innerHTML = '';
+  const body = { accountNumber: v('t-acct').toUpperCase(), type: v('t-type'), amount: parseFloat(v('t-amt')), description: v('t-desc')||'Admin transaction' };
+  if (!body.accountNumber || !body.amount) { err.innerHTML = merr('Account number and amount are required.'); return; }
+  btn.innerHTML = '<span class="spinner"></span> Routing via CBK…'; btn.disabled = true;
+  try {
+    const res = await req('POST', '/transactions', body);
+    toast((body.type==='deposit'?'Deposit':'Withdrawal') + ' of ' + ksh(body.amount) + ' via CBK confirmed. Ref: ' + res.transaction.reference, 'ok');
+    closeM('m-tx');
+    ['t-acct','t-amt','t-desc'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('t-info').style.display='none';
+    loadTxs(); refreshDash();
+  } catch (e) { err.innerHTML = merr(e.message); }
+  finally { btn.innerHTML = 'Process via CBK → SMS Confirmation'; btn.disabled = false; }
+}
+
+// ══════════════════════════════════════════════════════════
+//  SMS LOG
+// ══════════════════════════════════════════════════════════
+async function loadSms() {
+  try {
+    const d = await req('GET', '/sms-log');
+    const el = document.getElementById('sms-list');
+    if (!d.messages.length) { el.innerHTML = '<div class="empty"><div class="empty-ic">✉</div><div>No messages yet</div></div>'; return; }
+    el.innerHTML = d.messages.map(m => `
+      <div class="msg-item">
+        <div class="msg-ic">📱</div>
+        <div class="msg-body">
+          <div class="msg-to">To: ${esc(m.phone_number)} · ${esc(m.message_type||'notification')}</div>
+          <div class="msg-txt">${esc(m.message)}</div>
+          <div class="msg-ts">${dt(m.sent_at)}</div>
+        </div>
+        <div><div class="badge ${m.status==='sent'?'bg':'br'}">${m.status}</div></div>
+      </div>`).join('');
+  } catch (e) { document.getElementById('sms-list').innerHTML = `<div class="empty"><div>${esc(e.message)}</div></div>`; }
+}
+
+// ══════════════════════════════════════════════════════════
+//  AUDIT LOG
+// ══════════════════════════════════════════════════════════
+async function loadAudit() {
+  try {
+    const d = await req('GET', '/audit-log');
+    const el = document.getElementById('audit-list');
+    if (!d.log.length) { el.innerHTML = '<div class="empty"><div class="empty-ic">◎</div><div>No events</div></div>'; return; }
+    el.innerHTML = d.log.map(l => `
+      <div class="arow">
+        <div class="adot ${l.action.includes('block')||l.action.includes('fail')?'warn':l.action.includes('login')?'info':'ok'}"></div>
+        <div class="atm">${dt(l.created_at)}</div>
+        <div class="amsg">${esc(l.action)}${l.performed_by?' <span style="color:var(--muted)">· '+esc(l.performed_by)+'</span>':''}</div>
+      </div>`).join('');
+  } catch (e) { document.getElementById('audit-list').innerHTML = `<div class="empty"><div>${esc(e.message)}</div></div>`; }
+}
+
+// ══════════════════════════════════════════════════════════
+//  USSD SESSIONS
+// ══════════════════════════════════════════════════════════
+async function loadUssd() {
+  try {
+    const d = await req('GET', '/ussd-sessions');
+    const el = document.getElementById('ussd-list');
+    if (!d.sessions.length) { el.innerHTML = '<div class="empty"><div class="empty-ic">📱</div><div>No USSD sessions yet. Sessions appear here when customers dial *384*1#</div></div>'; return; }
+    el.innerHTML = d.sessions.map(s => `
+      <div class="ussd-row">
+        <span style="color:var(--blue)">${esc(s.phone_number)}</span>
+        <span style="color:var(--muted)">Step: ${esc(s.current_step)}</span>
+        <span class="badge ${s.is_active?'bg':'bm'}">${s.is_active?'Active':'Ended'}</span>
+        <span style="color:var(--muted);margin-left:auto">${dt(s.started_at)}</span>
+      </div>`).join('');
+  } catch (e) { document.getElementById('ussd-list').innerHTML = `<div class="empty"><div>${esc(e.message)}</div></div>`; }
+}
+
+// ══════════════════════════════════════════════════════════
+//  MODALS
+// ══════════════════════════════════════════════════════════
+function openM(id) {
+  document.getElementById(id).classList.add('op');
+  if (id === 'm-account' && !BANKS.length) loadBanks().then(fillBankSelects);
+}
+function closeM(id) { document.getElementById(id).classList.remove('op'); }
+
+// ══════════════════════════════════════════════════════════
+//  TOAST ALERTS
+// ══════════════════════════════════════════════════════════
+function toast(msg, type='ok') {
+  const az = document.getElementById('az');
+  const el = document.createElement('div');
+  el.className = `al al-${type}`;
+  el.innerHTML = `<span style="font-weight:600;flex-shrink:0">${type==='ok'?'✓':type==='err'?'✕':'ℹ'}</span><span>${esc(msg)}</span>`;
+  az.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+
+// ══════════════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════════════
+function ksh(n)  { return 'KSh ' + Number(n||0).toLocaleString('en-KE', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+function dt(iso) { if (!iso) return '—'; return new Date(iso).toLocaleString('en-KE', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }); }
+function esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function v(id)   { return document.getElementById(id)?.value?.trim() || ''; }
+function merr(m) { return `<div class="al al-err" style="margin-bottom:12px"><span style="font-weight:600">✕</span><span>${esc(m)}</span></div>`; }
+
+// Auto-refresh dashboard every 30s
+setInterval(() => { if (document.querySelector('#p-dashboard.on')) refreshDash(); }, 30000);
+</script>
+</body>
+</html>
